@@ -40,54 +40,11 @@ const connectToWhatsApp = async () => {
     const message = m.messages[0].message?.conversation || caption || ext?.text;
     const key = m.messages[0]?.key;
     const isFromMe = key?.fromMe === true;
-    const isInGroup = m.messages[0].key.participant ? true : false;
-    const metadata = isInGroup
-      ? async () => {
-          try {
-            return await sock.groupMetadata(chat);
-          } catch (error) {
-            console.log(error);
-            return null;
-          }
-        }
-      : null;
-    const stickerObject = m.messages[0].message?.stickerMessage;
-    const sticker = stickerObject
-      ? {
-          isAnimated: stickerObject.isAnimated,
-          mimetype: stickerObject.mimetype,
-          url: stickerObject.url,
-        }
-      : null;
 
     const quotedMessage = ext?.contextInfo?.quotedMessage;
     const quotedMessageJid = ext?.contextInfo?.remoteJid;
     const isQuotedStatus =
       quotedMessageJid === "status@broadcast" ? true : false;
-
-    // const data = {
-    //   chat,
-    //   sender,
-    //   message,
-    //   key,
-    //   isFromMe,
-    //   isInGroup,
-    //   metadata,
-    //   stickerObject,
-    //   sticker,
-    //   quotedMessage,
-    //   quotedMessageJid,
-    //   isQuotedStatus,
-    // };
-
-    // console.log(
-    //   "___\nRecieved:",
-    //   message || sticker,
-    //   "\nFrom:",
-    //   sender,
-    //   isInGroup ? "\nIn: " + metadata.subject : "",
-    //   "\n___"
-    // );
 
     switch (true) {
       case message?.includes("test") && !isFromMe:
