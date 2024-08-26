@@ -41,7 +41,16 @@ const connectToWhatsApp = async () => {
     const key = m.messages[0]?.key;
     const isFromMe = key?.fromMe === true;
     const isInGroup = m.messages[0].key.participant ? true : false;
-    const metadata = isInGroup ? await sock.groupMetadata(chat) : null;
+    const metadata = isInGroup
+      ? async () => {
+          try {
+            return await sock.groupMetadata(chat);
+          } catch (error) {
+            console.log(error);
+            return null;
+          }
+        }
+      : null;
     const stickerObject = m.messages[0].message?.stickerMessage;
     const sticker = stickerObject
       ? {
