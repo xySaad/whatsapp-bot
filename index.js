@@ -35,7 +35,8 @@ const connectToWhatsApp = async () => {
     const sender = m.messages[0].key.participant || chat;
     const ext = m.messages[0].message?.extendedTextMessage;
     const caption =
-      m.messages[0].message["videoMessage" || "imageMessage"]?.caption;
+      m.messages[0]?.message?.videoMessage?.caption ||
+      m.messages[0]?.message?.imageMessage?.caption;
 
     const message = m.messages[0].message?.conversation || caption || ext?.text;
     const key = m.messages[0]?.key;
