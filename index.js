@@ -1,6 +1,6 @@
 import makeWASocket, { useMultiFileAuthState } from "@whiskeysockets/baileys";
 import { handleTag } from "./utils/handleTag.js";
-import tiktokDl from "@tobyg74/tiktok-api-dl";
+import { getTiktok } from "./utils/tiktok.js";
 
 const connectToWhatsApp = async () => {
   const { state, saveCreds } = await useMultiFileAuthState("auth_info_baileys");
@@ -76,51 +76,21 @@ const connectToWhatsApp = async () => {
         break;
       case message?.startsWith("!t"):
         const tiktokLink = message.split("!t")[1];
+        sock.sendMessage(chat, {
+          react: {
+            text: "🕒",
+            key,
+          },
+        });
 
-        try {
-          // Convert ReadableStream to Buffer
-          async function streamToBuffer(stream) {
-            const chunks = [];
-            for await (const chunk of stream) {
-              chunks.push(chunk);
-            }
-            return Buffer.concat(chunks);
-          }
+        getTiktok(sock, m, { tiktokLink, chat });
 
-          // Function to download video using fetch and return a buffer
-          async function downloadVideo(url) {
-            const response = await fetch(url);
-            if (!response.ok) {
-              throw new Error(`Failed to fetch video: ${response.statusText}`);
-            }
-            const videoBuffer = await streamToBuffer(response.body); // Convert stream to buffer
-            return videoBuffer;
-          }
-
-          const videoInfo = await tiktokDl.Downloader(tiktokLink, {
-            version: "v3",
-          });
-
-          const videoBuffer = await downloadVideo(videoInfo?.result?.videoHD);
-
-          sock.sendMessage(
-            chat,
-            {
-              video: videoBuffer,
-              caption: videoInfo?.result.desc.substring(0, 35),
-            },
-            {
-              quoted: m.messages[0],
-            }
-          );
-        } catch (error) {
-          sock.sendMessage(
-            chat,
-            { text: "ra kayn error ajmi" },
-            { quoted: m.messages[0] }
-          );
-          console.error(error.message);
-        }
+        sock.sendMessage(chat, {
+          react: {
+            text: "✅",
+            key,
+          },
+        });
       default:
         break;
     }
