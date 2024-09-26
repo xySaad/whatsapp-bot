@@ -83,14 +83,34 @@ const connectToWhatsApp = async () => {
           },
         });
 
-        getTiktok(sock, m, { tiktokLink, chat });
+        const res = await getTiktok(tiktokLink);
 
-        sock.sendMessage(chat, {
-          react: {
-            text: "✅",
-            key,
-          },
-        });
+        if (!res.ok) {
+          sock.sendMessage(chat, {
+            react: {
+              text: "🚫",
+              key,
+            },
+          });
+        } else if (res.ok && res.video.buffer) {
+          await sock.sendMessage(
+            chat,
+            {
+              video: res.video.buffer,
+              caption: res.video.caption,
+            },
+            {
+              quoted: m.messages[0],
+            }
+          );
+          sock.sendMessage(chat, {
+            react: {
+              text: "✅",
+              key,
+            },
+          });
+        }
+
       default:
         break;
     }
