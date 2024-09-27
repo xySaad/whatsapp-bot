@@ -1,5 +1,6 @@
 class Bot {
   constructor(sock, m) {
+    this.me = sock.authState.creds.me.id;
     this.m = m;
     this.sock = sock;
     this.chat = m.messages[0].key.remoteJid;

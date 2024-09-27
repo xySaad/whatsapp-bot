@@ -5,10 +5,19 @@ import { getTiktok } from "./utils/tiktok.js";
 export const run = async (sock, m) => {
   const bot = new Bot(sock, m);
   switch (true) {
-    case bot.message == "!prv":
+    case bot.message == "!prv" && bot.isFromMe:
       if (bot.quotedMessage) {
-        bot.send(bot.sender, {
-          forward: { ...bot.m.messages[0], message: bot.quotedMessage },
+        bot.send(bot.me, {
+          forward: {
+            ...bot.m.messages[0],
+            message: {
+              ...bot.quotedMessage.viewOnceMessageV2.message,
+              imageMessage: {
+                ...bot.quotedMessage.viewOnceMessageV2.message.imageMessage,
+                viewOnce: false,
+              },
+            },
+          },
         });
       }
       break;
