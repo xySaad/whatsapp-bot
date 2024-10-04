@@ -1,6 +1,6 @@
 export const prv = (bot) => {
   if (
-    bot.quotedMessage.viewOnceMessageV2 &&
+    bot.quotedMessage?.viewOnceMessageV2 &&
     bot.quotedMessage &&
     bot.isFromMe
   ) {
