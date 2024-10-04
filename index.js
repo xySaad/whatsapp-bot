@@ -1,14 +1,19 @@
 import makeWASocket, { useMultiFileAuthState } from "@whiskeysockets/baileys";
 import { run } from "./bot.js";
+import dotenv from "dotenv";
+import Bot from "./utils/_Bot.js";
+dotenv.config();
 
 const connectToWhatsApp = async () => {
   const { state, saveCreds } = await useMultiFileAuthState("auth_info_baileys");
 
-  const sock = makeWASocket.makeWASocket({
+  const sock = await makeWASocket.makeWASocket({
     markOnlineOnConnect: false,
     auth: state,
     printQRInTerminal: true,
   });
+
+  const bot = new Bot(sock);
 
   sock.ev.on("creds.update", saveCreds);
 
@@ -28,10 +33,14 @@ const connectToWhatsApp = async () => {
       }
     } else if (connection === "open") {
       console.log("opened connection");
+      bot.send(bot.id, {
+        text: ` Bot is alive\nMode: ${process.env.BOT_MODE}`,
+      });
     }
   });
   sock.ev.on("messages.upsert", async (m) => {
-    run(sock, m);
+    bot.init(m);
+    run(bot);
   });
 };
 

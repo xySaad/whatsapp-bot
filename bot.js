@@ -1,10 +1,8 @@
-import Bot from "./utils/_Bot.js";
 import { handleTag } from "./utils/handleTag.js";
 import { prv } from "./utils/prv.js";
 import { handleDownload } from "./utils/handleDownload.js";
 
-export const run = async (sock, m) => {
-  const bot = new Bot(sock, m);
+export const run = async (bot) => {
   switch (true) {
     case bot.message == "!prv" && bot.isFromMe:
       prv(bot);
@@ -27,13 +25,17 @@ export const run = async (sock, m) => {
       }
       break;
 
-    case bot.message?.startsWith("!t"):
-      const tiktokLink = bot.message.split("!t")[1];
-      handleDownload(bot, tiktokLink, "tiktok");
-      break;
-    case bot.message?.startsWith("!f"):
-      const facebookLink = bot.message.split("!f")[1];
-      handleDownload(bot, facebookLink, "facebook");
+    case process.env.BOT_MODE !== "personal":
+      switch (true) {
+        case bot.message?.startsWith("!t"):
+          const tiktokLink = bot.message.split("!t")[1];
+          handleDownload(bot, tiktokLink, "tiktok");
+          break;
+        case bot.message?.startsWith("!f"):
+          const facebookLink = bot.message.split("!f")[1];
+          handleDownload(bot, facebookLink, "facebook");
+          break;
+      }
       break;
 
     default:

@@ -1,10 +1,12 @@
 class Bot {
-  constructor(sock, m) {
-    this.id = sock.authState.creds.me.id;
-    this.me = this.id.replace(/:\d+/g, "");
-    this.selfTag = "@" + this.me.split("@")[0];
-    this.m = m;
+  constructor(sock) {
     this.sock = sock;
+    this.id = sock.authState.creds.me?.id;
+    this.me = this.id?.replace(/:\d+/g, "");
+    this.selfTag = "@" + this.me?.split("@")[0];
+  }
+  init(m) {
+    this.m = m;
     this.chat = m.messages[0].key.remoteJid;
     this.sender = m.messages[0].key.participant || this.chat;
     this.ext = m.messages[0].message?.extendedTextMessage;
