@@ -33,9 +33,9 @@ export const run = async (sock, m) => {
       const res = await getTiktok(tiktokLink);
       if (!res.ok) {
         bot.react("🚫");
-      } else if (res.ok && res.video.buffer) {
+      } else if (res.ok && res.video.url) {
         await bot.reply({
-          video: res.video.buffer,
+          video: { url: res.video.url },
           caption: res.video.caption,
         });
         bot.react("✅");
