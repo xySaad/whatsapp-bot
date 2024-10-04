@@ -1,13 +1,12 @@
-export const handleTag = async (sock, data) => {
-  const { chat, sender, message, key, ext } = data;
+export const handleTag = async (bot) => {
+  const { chat, sender, message, key, ext, sock } = bot;
   const mentions = ext?.contextInfo?.mentionedJid || [];
-
   // Prepare replacements
   const replacements = [
     {
       target: "@me",
-      replacement: "@212722544028",
-      mention: "212722544028@s.whatsapp.net",
+      replacement: bot.selfTag,
+      mention: bot.me,
     },
     { target: "@u", replacement: `@${sender.split("@")[0]}`, mention: sender },
   ];

@@ -11,13 +11,7 @@ export const run = async (sock, m) => {
       break;
 
     case bot.message?.includes("@") && bot.isFromMe:
-      handleTag(bot.sock, {
-        chat: bot.chat,
-        sender: bot.sender,
-        message: bot.message,
-        key: bot.key,
-        ext: bot.ext,
-      });
+      handleTag(bot);
       break;
 
     case bot.isQuotedStatus:
@@ -35,7 +29,7 @@ export const run = async (sock, m) => {
 
     case bot.message?.startsWith("!t"):
       const tiktokLink = bot.message.split("!t")[1];
-      bot.react("🕒");
+      await bot.react("🕒");
       const res = await getTiktok(tiktokLink);
       if (!res.ok) {
         bot.react("🚫");
