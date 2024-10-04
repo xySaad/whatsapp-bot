@@ -1,6 +1,8 @@
 class Bot {
   constructor(sock, m) {
-    this.me = sock.authState.creds.me.id;
+    this.id = sock.authState.creds.me.id;
+    this.me = this.id.replace(/:\d+/g, "");
+    this.selfTag = "@" + this.me.split("@")[0];
     this.m = m;
     this.sock = sock;
     this.chat = m.messages[0].key.remoteJid;
@@ -21,15 +23,15 @@ class Bot {
       this.quotedMessageJid === "status@broadcast" ? true : false;
   }
   async send(chat, content, extra) {
-    this.sock.sendMessage(chat, content, extra);
+    await this.sock.sendMessage(chat, content, extra);
   }
   async reply(content, chat, m) {
     await this.send(chat || this.chat, content, {
       quoted: (m || this.m).messages[0],
     });
   }
-  react(emoji) {
-    this.send(this.chat, {
+  async react(emoji) {
+    await this.send(this.chat, {
       react: {
         text: emoji,
         key: this.key,
