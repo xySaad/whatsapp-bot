@@ -1,7 +1,7 @@
 import Bot from "./utils/_Bot.js";
 import { handleTag } from "./utils/handleTag.js";
 import { prv } from "./utils/prv.js";
-import { getTiktok } from "./utils/tiktok.js";
+import { handleDownload } from "./utils/handleDownload.js";
 
 export const run = async (sock, m) => {
   const bot = new Bot(sock, m);
@@ -29,17 +29,11 @@ export const run = async (sock, m) => {
 
     case bot.message?.startsWith("!t"):
       const tiktokLink = bot.message.split("!t")[1];
-      await bot.react("🕒");
-      const res = await getTiktok(tiktokLink);
-      if (!res.ok) {
-        bot.react("🚫");
-      } else if (res.ok && res.video.url) {
-        await bot.reply({
-          video: { url: res.video.url },
-          caption: res.video.caption,
-        });
-        bot.react("✅");
-      }
+      handleDownload(bot, tiktokLink, "tiktok");
+      break;
+    case bot.message?.startsWith("!f"):
+      const facebookLink = bot.message.split("!f")[1];
+      handleDownload(bot, facebookLink, "facebook");
       break;
 
     default:
