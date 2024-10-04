@@ -23,8 +23,8 @@ class Bot {
   async send(chat, content, extra) {
     this.sock.sendMessage(chat, content, extra);
   }
-  async reply(content, m) {
-    await this.send(this.chat, content, {
+  async reply(content, chat, m) {
+    await this.send(chat || this.chat, content, {
       quoted: (m || this.m).messages[0],
     });
   }
