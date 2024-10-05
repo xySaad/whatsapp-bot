@@ -29,7 +29,7 @@ class Bot {
   }
   async reply(content, chat, m) {
     await this.send(chat || this.chat, content, {
-      quoted: (m || this.m).messages[0],
+      quoted: m?.messages[0] || this.m?.messages[0],
     });
   }
   async react(emoji) {
