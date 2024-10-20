@@ -39,7 +39,6 @@ const connectToWhatsApp = async () => {
     }
   });
   sock.ev.on("messages.upsert", async (m) => {
-    const bot = new Bot(sock);
     bot.init(m);
     run(bot);
   });
