@@ -44,15 +44,15 @@ class Bot {
     await this.sock.sendMessage(chat, content, extra);
   }
   async reply(content, chat, m) {
-    await this.send(chat || this.chat, content, {
+    await this.send(chat || this.Message.chat, content, {
       quoted: (m || this.Message.m).messages[0],
     });
   }
   async react(emoji) {
-    await this.send(this.chat, {
+    await this.send(this.Message.chat, {
       react: {
         text: emoji,
-        key: this.key,
+        key: this.Message.key,
       },
     });
   }
