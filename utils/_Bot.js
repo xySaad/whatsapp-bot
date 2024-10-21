@@ -6,30 +6,46 @@ class Bot {
     this.selfTag = "@" + this.me?.split("@")[0];
   }
   init(m) {
-    this.m = m;
-    this.chat = m.messages[0].key.remoteJid;
-    this.sender = m.messages[0].key.participant || this.chat;
-    this.ext = m.messages[0].message?.extendedTextMessage;
-    this.caption =
-      m.messages[0]?.message?.videoMessage?.caption ||
-      m.messages[0]?.message?.imageMessage?.caption;
+    const msgArray = m.messages[0];
+    const Message = {};
+    Message.m = m;
+    Message.message = msgArray.message;
+    Message.type = m.type;
+    Message.items = m.messages.length;
+    Message.chat = msgArray?.key.remoteJid;
+    Message.sender = msgArray?.key.participant || Message.chat;
+    Message.ext = msgArray?.message?.extendedTextMessage;
+    Message.caption =
+      msgArray?.message?.videoMessage?.caption ||
+      msgArray?.message?.imageMessage?.caption;
 
-    this.message =
-      m.messages[0].message?.conversation || this.caption || this.ext?.text;
-    this.key = m.messages[0]?.key;
-    this.isFromMe = this.key?.fromMe === true;
+    Message.text =
+      msgArray?.message?.conversation || Message.caption || Message.ext?.text;
 
-    this.quotedMessage = this.ext?.contextInfo?.quotedMessage;
-    this.quotedMessageJid = this.ext?.contextInfo?.remoteJid;
-    this.isQuotedStatus =
-      this.quotedMessageJid === "status@broadcast" ? true : false;
+    Message.key = msgArray?.key;
+    Message.isFromMe = Message.key?.fromMe === true;
+
+    Message.quotedMessage = Message.ext?.contextInfo?.quotedMessage;
+    Message.quotedMessageJid = Message.ext?.contextInfo?.remoteJid;
+    Message.isQuotedStatus =
+      Message.quotedMessageJid === "status@broadcast" ? true : false;
+
+    Message.viewOnce = msgArray.message?.viewOnceMessageV2?.message;
+
+    Message.viewOnceMedia =
+      Message.viewOnce?.videoMessage || Message.viewOnce?.imageMessage;
+
+    Message.caption = Message.viewOnceMedia
+      ? Message.viewOnceMedia.caption
+      : Message.caption;
+    this.Message = Message;
   }
   async send(chat, content, extra) {
     await this.sock.sendMessage(chat, content, extra);
   }
   async reply(content, chat, m) {
     await this.send(chat || this.chat, content, {
-      quoted: (m || this.m).messages[0],
+      quoted: (m || this.Message.m).messages[0],
     });
   }
   async react(emoji) {

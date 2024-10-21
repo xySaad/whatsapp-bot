@@ -1,17 +1,26 @@
 export const prv = (bot) => {
+  const viewOnceObject =
+    bot.Message.quotedMessage?.viewOnceMessageV2 ||
+    bot.Message.quotedMessage?.viewOnceMessage ||
+    bot.Message.quotedMessage?.viewOnceMessageV1;
+
+  const viewOnceMessage = viewOnceObject?.message;
+
+  const viewOnceImage = viewOnceMessage?.imageMessage;
+
   if (
-    bot.quotedMessage?.viewOnceMessageV2 &&
-    bot.quotedMessage &&
-    bot.isFromMe
+    bot.Message.quotedMessage?.viewOnceMessageV2 &&
+    bot.Message.quotedMessage &&
+    bot.Message.isFromMe
   ) {
     bot.reply(
       {
         forward: {
-          ...bot.m.messages[0],
+          ...bot.Message.m.messages[0],
           message: {
-            ...bot.quotedMessage.viewOnceMessageV2.message,
+            ...viewOnceMessage,
             imageMessage: {
-              ...bot.quotedMessage.viewOnceMessageV2.message.imageMessage,
+              ...viewOnceImage,
               viewOnce: false,
             },
           },
